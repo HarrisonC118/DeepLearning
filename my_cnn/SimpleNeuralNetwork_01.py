@@ -28,6 +28,7 @@ class BasicNN(nn.Module):
 
         self.final_bias = nn.Parameter(torch.tensor(-16.0), requires_grad=False)
 
+    # pytorch里面规定了必须要重写forward，不然就抛出异常
     def forward(self, input):
         input_to_top_relu = input * self.w00 + self.b00
         top_relu_output = F.relu(input_to_top_relu)
@@ -40,6 +41,7 @@ class BasicNN(nn.Module):
 
         input_to_final_relu = scaled_top_relu_output + scaled_bottom_relu_output + self.final_bias
 
+        # Rectified是整流的意思，在电学里是把交流电变为直流电。这里就是把杂乱的数据变得
         output = F.relu(input_to_final_relu)
         return output
 
@@ -49,6 +51,7 @@ if __name__ == '__main__':
     # 这段代码的作用是生成一个等差数列
     input_doses = torch.linspace(start=0, end=1, steps=11)
     model = BasicNN()
+    # 因为nn.Module实现了__call__方法，允许实例像函数一样直接调用。当直接调用的时候就会执行__call__里面的代码
     output_values = model(input_doses)
 
     # 画出一个漂亮的图表
